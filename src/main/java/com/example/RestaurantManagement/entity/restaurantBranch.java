@@ -1,9 +1,12 @@
 package com.example.RestaurantManagement.entity;
 
-public class restaurantBranch {
-    private Long id;
-    private String branch_name;
+import jakarta.persistence.Column;
 
+public class restaurantBranch {
+    @Column(nullable = false, unique = true)
+    private Long id;
+    @Column(nullable=false)
+    private String branch_name;
     private Long owner_id;
     private Long manager_id;
     private String address;
