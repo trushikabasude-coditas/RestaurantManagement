@@ -1,5 +1,6 @@
 package com.example.RestaurantManagement.entity;
 
+import com.example.RestaurantManagement.enums.orderStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
@@ -14,5 +15,5 @@ public class order {
     private Integer discount;
 private Integer final_Amount;
 @Enumerated(EnumType.STRING)
-    private  orderStatus status;
+    private orderStatus status;
 }
