@@ -4,5 +4,7 @@ public enum Role {
     SUPER_ADMIN,
     OWNER,
     MANAGER,
-    STAFF
+    WAITER,
+    CHEF,
+    CLEANER
 }

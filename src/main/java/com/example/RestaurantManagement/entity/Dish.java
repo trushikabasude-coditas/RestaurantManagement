@@ -1,5 +1,6 @@
 package com.example.RestaurantManagement.entity;
 
+import com.example.RestaurantManagement.enums.DishCategory;
 import jakarta.persistence.Column;
 
 public class Dish {
@@ -13,6 +14,6 @@ public class Dish {
     @Column(name = "photo_url")
     private String photoUrl;
 
-    private String
+  private DishCategory category;
 
 }
