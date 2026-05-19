@@ -46,5 +46,12 @@ public class AuthController {
         return ResponseEntity
                 .ok(ApiResponse.success("Refresh token successful", result));
     }
+    public ResponseEntity<ApiResponse<RegisterResponseDto>> register(@Valid @RequestBody RegisterResquestDto  dto) {
+        RegisterResponseDto reuslt = authService.registerUser(dto);
+    return  ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(ApiResponse.success("User registered successfully", reuslt));
+    }
+
 
 }

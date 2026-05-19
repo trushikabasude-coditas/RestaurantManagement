@@ -41,9 +41,6 @@ public class AuthService {
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new BadRequestException("User with this email already exists");
         }
-        once invite reister then login suer adminwill be ther automatically
-        res add delete
-                branch add delete
         Restaurants restaurant = null;
         RestaurantBranch branch = null;
 
@@ -105,7 +102,6 @@ public class AuthService {
                 .branch(invitation.getBranch())
                 .active(true)
                 .build();
-
         userRepository.save(user);
 
         if (invitation.getRole() == Role.MANAGER && invitation.getBranch() != null) {
@@ -180,5 +176,9 @@ public class AuthService {
     private boolean isBranchLevelRole(Role role) {
         return role == Role.MANAGER || role == Role.WAITER
                 || role == Role.CHEF || role == Role.CLEANER;
+    }
+
+    public RegisterResponseDto registerUser(RegisterResquestDto dto) {
+
     }
 }
