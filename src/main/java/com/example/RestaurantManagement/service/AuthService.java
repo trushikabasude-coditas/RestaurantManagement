@@ -178,7 +178,22 @@ public class AuthService {
                 || role == Role.CHEF || role == Role.CLEANER;
     }
 
-    public RegisterResponseDto registerUser(RegisterResquestDto dto) {
+    public String register(RegisterRequestDto req) {
+        if (userRepository.existsByEmail(req.email()))
+            throw new RuntimeException("Email already in use");
 
+        Role role = (req.role() != null && !req.role().isBlank())
+                ? Role.valueOf(req.role()) : Role.SUPER_ADMIN;
+
+        userRepository.save(User.builder()
+                .username(req.username())
+                .email(req.email())
+                .password(passwordEncoder.encode(req.password()))
+                .fullName(req.fullName())
+                .role(role)
+                .build());
+
+        return "Registered successfully as " + role;
     }
+
 }

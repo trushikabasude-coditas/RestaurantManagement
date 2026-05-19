@@ -13,7 +13,7 @@ public record RegisterRequestDto (@NotBlank String username,
                                @NotBlank
                                @Size(min=6)
                                String fullName,
-                               @Pattern(regexp ="A|EMPLOYEE" ,message="Must be admin or employee")
+                               @Pattern(regexp ="ADMIN|EMPLOYEE" ,message="Must be admin or employee")
                                   String role
 )
 {}
