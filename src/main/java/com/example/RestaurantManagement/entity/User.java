@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 @Table(name = "users")
 public class User {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", updatable = false, nullable = false)
     private  Long id;
@@ -32,13 +33,16 @@ public class User {
     @Column(name = "email", nullable = false, unique = true, length = 255)
     private String email;
     @Column(name = "password_hash")
-    private String password;
+    private String passwordHash;
 
     @Size(max = 20, message = "Phone must be at most 20 characters")
     @Column(name = "phone", length = 20)
     private String phone;
+
+    @Column(name = "address")
     private String address;
-    private String photo_id;
+    @Column(name = "photo_url", length = 500)
+    private String photoUrl;
 
     @NotNull(message = "role is required field")
     @Enumerated(EnumType.STRING)
