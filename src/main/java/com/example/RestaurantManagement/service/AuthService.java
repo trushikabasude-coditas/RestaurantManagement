@@ -3,6 +3,7 @@ package com.example.RestaurantManagement.service;
 import com.example.RestaurantManagement.dto.*;
 import com.example.RestaurantManagement.entity.*;
 import com.example.RestaurantManagement.enums.InvitationStatus;
+
 import com.example.RestaurantManagement.enums.Role;
 import com.example.RestaurantManagement.exception.BadRequestException;
 import com.example.RestaurantManagement.exception.ResourceNotFoundException;
@@ -31,7 +32,7 @@ public class AuthService {
         User sender = userRepository.findByEmail(senderEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Sender not found"));
 
-        validateSenderCanInvite(sender, dto.getRole());
+        validateSenderCanInvite(sender,dto.getRole());
 
         if (invitationRepository.existsByInvitedEmailAndStatus(dto.getEmail(), InvitationStatus.PENDING)) {
             throw new BadRequestException("A pending invitation already exists for " + dto.getEmail());
@@ -40,7 +41,9 @@ public class AuthService {
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new BadRequestException("User with this email already exists");
         }
-
+        once invite reister then login suer adminwill be ther automatically
+        res add delete
+                branch add delete
         Restaurants restaurant = null;
         RestaurantBranch branch = null;
 
@@ -70,7 +73,7 @@ public class AuthService {
         invitationRepository.save(invitation);
         emailService.sendInvitationEmail(dto.getEmail(), dto.getRole().name(), invitation.getToken());
 
-        return new InviteResponseDto("Invitation sent successfully to " + dto.getEmail(), dto.getEmail());
+        return new InviteResponseDto("Invitaion sent successfully!!"+ dto.getEmail(),dto.getEmail());
     }
 
     @Transactional
@@ -118,8 +121,7 @@ public class AuthService {
         String accessToken = jwtUtil.generateAccessToken(user.getEmail(), user.getRole().name());
         String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
 
-        return new AuthResponseDto(accessToken, refreshToken,
-                user.getRole().name(), user.getEmail(), user.getName());
+        return new AuthResponseDto(accessToken, refreshToken,user.getRole().name(), user.getEmail(), user.getName());
     }
 
     public AuthResponseDto login(LoginRequestDto dto) {

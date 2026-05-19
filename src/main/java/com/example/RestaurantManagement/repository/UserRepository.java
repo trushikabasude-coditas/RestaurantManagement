@@ -1,9 +1,9 @@
 package com.example.RestaurantManagement.repository;
 
 import com.example.RestaurantManagement.entity.User;
+import com.example.RestaurantManagement.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import javax.management.relation.Role;
 import java.util.List;
 import java.util.Optional;
 

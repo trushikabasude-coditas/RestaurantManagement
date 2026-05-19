@@ -29,9 +29,12 @@ public class JwtUtil {
     private SecretKey key() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
-    private String generateAccessToken(String username) {
+
+    public String generateAccessToken(String email, String role) {
         return Jwts.builder()
-                .subject(username)
+                .subject(email)
+                .claim("role", role)
+                .claim("type", "access")
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + accessExpirationMs))
                 .signWith(key())
@@ -47,6 +50,7 @@ public class JwtUtil {
                 .signWith(key())
                 .compact();
     }
+
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(key())
@@ -70,15 +74,14 @@ public class JwtUtil {
             return false;
         }
     }
-        public boolean isRefreshToken(String token){
-            try {
-                return "refresh".equals(extractAllClaims(token).get("type", String.class));
-            } catch (Exception e) {
-                return false;
-            }
-        }
 
-    public String generateAccessToken(@NotBlank(message = "Email is required") @Email(message = "Invalid email format") String email, String name) {
+    public boolean isRefreshToken(String token) {
+        try {
+            return "refresh".equals(extractAllClaims(token).get("type", String.class));
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
+
 

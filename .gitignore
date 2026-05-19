@@ -31,3 +31,173 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+spring.application.name=demo-email
+
+spring.datasource.url=jdbc:mysql://localhost:3306/email
+spring.datasource.username=root1234
+spring.datasource.password=root1234
+
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+
+spring.mail.username=vinoothnamukkamala@gmail.com
+spring.mail.password=gxqx bbzu dgzt oncx
+
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+spring.mail.properties.mail.smtp.ssl.trust=smtp.gmail.com
+You, Now
+package com.example.RestaurantManagement.service;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class EmailService {
+
+    private final JavaMailSender mailSender;
+
+    @Value("${spring.mail.username}")
+    private String fromEmail;
+
+    @Value("${app.invite.base-url}")
+    private String baseUrl;
+
+    @Async
+    public void sendInvitationEmail(String toEmail, String role, String token) {
+        String acceptLink = baseUrl + "/api/auth/accept-invite?token=" + token;
+        String subject = "You're invited to join RestaurantManagement as " + role;
+        String body = """
+                <h2>You have been invited!</h2>
+                <p>You have been invited as <strong>%s</strong>.</p>
+                <p>Click below to accept and set up your account:</p>
+                <a href="%s" style="padding:10px 20px;background:#4CAF50;color:white;
+                text-decoration:none;border-radius:4px;">Accept Invitation</a>
+                <p>Link expires in <strong>48 hours</strong>.</p>
+                """.formatted(role, acceptLink);
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setFrom(fromEmail);
+            helper.setTo(toEmail);
+            helper.setSubject(subject);
+            helper.setText(body, true);
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send invitation email to " + toEmail, e);
+        }
+    }
+}
+package com.example.RestaurantManagement.util;
+
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+
+@Component
+public class JwtUtil {
+
+    @Value("${app.jwt.secret}")
+    private String secret;
+
+    @Value("${app.jwt.access-expiration-ms}")
+    private long accessExpirationMs;
+
+    @Value("${app.jwt.refresh-expiration-ms}")
+    private long refreshExpirationMs;
+
+    private SecretKey key() {
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public String generateAccessToken(String email, String role) {
+        return Jwts.builder()
+                .subject(email)
+                .claim("role", role)
+                .claim("type", "access")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + accessExpirationMs))
+                .signWith(key())
+                .compact();
+    }
+
+    public String generateRefreshToken(String email) {
+        return Jwts.builder()
+                .subject(email)
+                .claim("type", "refresh")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + refreshExpirationMs))
+                .signWith(key())
+                .compact();
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(key())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    public String extractEmail(String token) {
+        return extractAllClaims(token).getSubject();
+    }
+
+    public String extractRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
+    }
+
+    public boolean isTokenValid(String token) {
+        try {
+            return !extractAllClaims(token).getExpiration().before(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    public boolean isRefreshToken(String token) {
+        try {
+            return "refresh".equals(extractAllClaims(token).get("type", String.class));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+

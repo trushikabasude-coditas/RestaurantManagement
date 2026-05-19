@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 
 public class AuthController {
-    private AuthService authService;
+    private final AuthService authService;
 
+    @PostMapping("/invite")
     public ResponseEntity<ApiResponse<InviteResponseDto>> invite(@Valid @RequestBody InviteRequestDto dto,@AuthenticationPrincipal String senderEmail) {
         InviteResponseDto result = authService.sendInvitation(dto, senderEmail);
         return ResponseEntity
