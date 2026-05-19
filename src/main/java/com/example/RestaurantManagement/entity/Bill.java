@@ -1,28 +1,59 @@
 package com.example.RestaurantManagement.entity;
+import com.example.RestaurantManagement.enums.PaymentWay;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "bill")
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
-   private Long restaurant_id;
- private int subTotal;
- private int discountApplied;
+
+    @NotNull
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "order_id", nullable = false, unique = true)
+    private Order order;
+
+    @NotNull
+    @Column(name = "subtotal")
+ private Integer subTotal;
+
+    @Column(name = "discount_applied")
+    private Integer discountApplied = 0;
+    @Column(name = "discount_reason" ,length = 20)
  private String discountReason;
+    @Column(name = "tax_amount")
 private int taxAmount;//(subtotal-=disc)
-private int gstRate;
-private int FinalAmount;
-@Column(name = "pdf_url")
+
+    @Min(0)
+    @Column(name = "gst_rate")
+    private Integer gstRate;
+@Column(name = "final_amount")
+private Integer finalAmount;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_way", length = 20)
+    private PaymentWay paymentWay;
+
+    @Column(name = "pdf_url", length = 500)
     private String pdfUrl;
 
-//let us do all things with bit phase wise 1st we will do the entity and all te mappings
-    //ow  ner of restaurant ahs many brnaches and each branch has the manager and th restaurenat with the owner like main restaurnat the owner is manger itself and all brnaces has the 1 1 mnaer )
-    (so think very clearly tdraightky and proper with all validation like every existig validation)
-    then we will do restaurnat module like adding and all things of restaurant ,branches and all then at last we will do roles things
-so login with jwt token also that we will crete one and then have password with that password role will login and get token and then only securely loged in . (common way of token can use refresh token and all for robust login)
+    @Column(name = "is_paid", nullable = false)
+    private boolean paid = false;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-i have entites and all see my updated zip see ecah and evry small thin clearly so that full fletch all above requiremnts are achived
-}
+ }
 

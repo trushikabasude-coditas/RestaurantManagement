@@ -1,7 +1,8 @@
 package com.example.RestaurantManagement.enums;
 
-public enum orderStatus {
+public enum OrderStatus {
     PENDING,
     IN_PROGRESS,
-    COMPLETED
+    COMPLETED,
+    CANCELLED
 }

@@ -1,4 +1,4 @@
 package com.example.RestaurantManagement.service;
 
-public interface dineService {
+public class dineService {
 }
