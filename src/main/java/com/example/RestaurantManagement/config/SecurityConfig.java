@@ -36,15 +36,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
                             .anyRequest().authenticated()
                     )
                     .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
             return http.build();
         }
-
         @Bean
         public PasswordEncoder passwordEncoder() {
             return new BCryptPasswordEncoder();
         }
-
         @Bean
         public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
                 throws Exception {

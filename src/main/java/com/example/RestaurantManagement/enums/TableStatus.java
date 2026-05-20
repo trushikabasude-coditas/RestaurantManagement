@@ -6,3 +6,4 @@ public enum TableStatus {
     OCCUPIED,
     CANCELLED,
 }
+

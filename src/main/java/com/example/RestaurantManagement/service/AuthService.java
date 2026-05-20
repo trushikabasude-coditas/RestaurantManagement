@@ -179,5 +179,4 @@ public class AuthService {
                 || role == Role.CHEF || role == Role.CLEANER;
     }
 
-
 }

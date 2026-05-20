@@ -55,6 +55,7 @@ import java.util.List;
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
 
+
             filterChain.doFilter(request, response);
         }
     }
