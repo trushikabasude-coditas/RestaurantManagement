@@ -10,9 +10,10 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 public class TableResponseDto {
-    private String tableName;
+private Long id;
+    private Integer tableNumber;
     private Integer capacity;
-    private TableStatus status;
+    private String status;
     private  Long branchId;
-    private String  BranchName;
+    private String  branchName;
 }

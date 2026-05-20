@@ -33,6 +33,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
                                     "/api/auth/refresh"
                             ).permitAll()
                             .requestMatchers("/api/auth/invite").authenticated()
+                            .requestMatchers("/api/restaurants/**").authenticated()
+                            .requestMatchers("/api/branches/**").authenticated()
+                            .requestMatchers("/api/staff/**").authenticated()
+                            .requestMatchers("/api/tables/**").authenticated()
                             .anyRequest().authenticated()
                     )
                     .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

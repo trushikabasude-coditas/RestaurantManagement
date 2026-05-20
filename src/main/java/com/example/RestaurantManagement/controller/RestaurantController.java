@@ -21,81 +21,57 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
-    // OWNER — create
+    // creating owner
     @PostMapping
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<RestaurantResponseDto>> create(
-            @Valid @RequestBody RestaurantRequestDto dto,
+    public ResponseEntity<ApiResponse<RestaurantResponseDto>> create(@Valid @RequestBody RestaurantRequestDto dto,
             @AuthenticationPrincipal String ownerEmail) {
-
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Restaurant created successfully",
-                        restaurantService.create(dto, ownerEmail)));
+      .body(ApiResponse.success("Restaurant created successfully",
+      restaurantService.create(dto, ownerEmail)));
     }
 
-    // OWNER — get their own restaurants
+    // OWNER own restaurant
     @GetMapping("/my")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<List<RestaurantResponseDto>>> getMyRestaurants(
-            @AuthenticationPrincipal String ownerEmail) {
-
-        return ResponseEntity.ok(
-                ApiResponse.success("Restaurants fetched",
-                        restaurantService.getMyRestaurants(ownerEmail)));
-    }
-
-    // OWNER or SUPER_ADMIN — get one by id
-    @GetMapping("/{id}")
-    @PreAuthorize("hasRole('OWNER') or hasRole('SUPER_ADMIN')")
-    public ResponseEntity<ApiResponse<RestaurantResponseDto>> getById(
-            @PathVariable Long id,
-            @AuthenticationPrincipal String requesterEmail) {
-
+    public ResponseEntity<ApiResponse<List<RestaurantResponseDto>>> getMyRestaurants(@AuthenticationPrincipal String ownerEmail) {
         return ResponseEntity.ok(
                 ApiResponse.success("Restaurant fetched",
-                        restaurantService.getById(id, requesterEmail)));
+             restaurantService.getMyRestaurants(ownerEmail)));
     }
 
-    // SUPER_ADMIN — view all
+    // owner and superadmi  -
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('OWNER') or hasRole('SUPER_ADMIN')")
+    public ResponseEntity<ApiResponse<RestaurantResponseDto>> getById(@PathVariable Long id,
+                                           @AuthenticationPrincipal String requesterEmail) {
+        return ResponseEntity.ok(ApiResponse.success("Restaurant fetched",restaurantService.getById(id, requesterEmail)));
+ }
+
     @GetMapping
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<List<RestaurantResponseDto>>> getAll() {
-
-        return ResponseEntity.ok(
-                ApiResponse.success("All restaurants fetched",
-                        restaurantService.getAll()));
+        return ResponseEntity.ok(ApiResponse.success("All restaurants fetched",restaurantService.getAll()));
     }
-
-    // OWNER — full update (PUT)
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<RestaurantResponseDto>> update(
-            @PathVariable Long id,
-            @Valid @RequestBody RestaurantRequestDto dto,
-            @AuthenticationPrincipal String ownerEmail) {
-
-        return ResponseEntity.ok(
-                ApiResponse.success("Restaurant updated",
+    public ResponseEntity<ApiResponse<RestaurantResponseDto>> update(@PathVariable Long id, @Valid @RequestBody RestaurantRequestDto dto,
+                                                            @AuthenticationPrincipal String ownerEmail) {
+ return ResponseEntity.ok(ApiResponse.success("Restaurant updated",
                         restaurantService.update(id, dto, ownerEmail)));
+
     }
-
-    // OWNER — partial update (PATCH)
-
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<Void>> delete(
-            @PathVariable Long id,
-            @AuthenticationPrincipal String ownerEmail) {
-
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id,
+                                           @AuthenticationPrincipal String ownerEmail) {
         restaurantService.delete(id, ownerEmail);
         return ResponseEntity.ok(ApiResponse.success("Restaurant deleted"));
     }
-
-    // SUPER_ADMIN
+//only superadmin
     @DeleteMapping("/admin/{id}")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteByAdmin(@PathVariable Long id) {
-
         restaurantService.deleteByAdmin(id);
         return ResponseEntity.ok(ApiResponse.success("Restaurant deleted by admin"));
     }

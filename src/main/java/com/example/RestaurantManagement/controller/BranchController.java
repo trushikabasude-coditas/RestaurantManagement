@@ -20,45 +20,40 @@ import java.util.List;
 
 public class BranchController {
     private final BranchService  branchService;
+
     @PostMapping
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<BranchResponseDto>> create(
-            @Valid @RequestBody BranchRequestDto dto,
-            @AuthenticationPrincipal String ownerEmail) {
+ public ResponseEntity<ApiResponse<BranchResponseDto>> create(@Valid @RequestBody BranchRequestDto dto,
+                                                        @AuthenticationPrincipal String ownerEmail) {
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Branch created successfully",
-                        branchService.create(dto, ownerEmail)));
+     return ResponseEntity.status(HttpStatus.CREATED)
+        .body(ApiResponse.success("Branch created successfully",
+             branchService.create(dto, ownerEmail)));
     }
     @GetMapping("/restaurant/{restaurantId}")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<List<BranchResponseDto>>> getByRestaurant(
-            @PathVariable Long restaurantId,
-            @AuthenticationPrincipal String ownerEmail) {
-
+    public ResponseEntity<ApiResponse<List<BranchResponseDto>>> getByRestaurant(@PathVariable Long restaurantId,
+                                                                      @AuthenticationPrincipal String ownerEmail) {
         return ResponseEntity.ok(ApiResponse.success("Branches fetched",
                 branchService.getByRestaurant(restaurantId, ownerEmail)));
     }
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('OWNER') or hasRole('SUPER_ADMIN')")
-    public ResponseEntity<ApiResponse<BranchResponseDto>> getById(
-            @PathVariable Long id,
-            @AuthenticationPrincipal String requesterEmail) {
-
+    public ResponseEntity<ApiResponse<BranchResponseDto>> getById(@PathVariable Long id,
+                                                                      @AuthenticationPrincipal String requesterEmail) {
         return ResponseEntity.ok(ApiResponse.success("Branch fetched",
                 branchService.getById(id, requesterEmail)));
     }
     @GetMapping("/restaurant/{restaurantId}/managers")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<ApiResponse<List<BranchResponseDto>>> getManagers(
-            @PathVariable Long restaurantId,
-            @AuthenticationPrincipal String ownerEmail) {
-
+    public ResponseEntity<ApiResponse<List<BranchResponseDto>>>getManagers(@PathVariable Long restaurantId,
+                                                                 @AuthenticationPrincipal String ownerEmail) {
         return ResponseEntity.ok(ApiResponse.success("Managers fetched",
                 branchService.getManagersOfRestaurant(restaurantId, ownerEmail)));
     }
 
-    // OWNER — full update
+ //Owenr full update
+
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<BranchResponseDto>> update(

@@ -11,8 +11,8 @@ public class TableRequestDto {
     @NotNull(message = "Branch Id is required")
     private Long branchId;
     @NotNull(message = "Branch name is required")
-    private String branchName;
-    @NotNull(message = "Table number is required field")
+//    private String branchName;
+//    @NotNull(message = "Table number is required field")
     @Min(value=1,message = "Positive Value is Required")
     private Integer tableNumber;
    @Min(value=1,message = "There should be atleast capacity of 1")
