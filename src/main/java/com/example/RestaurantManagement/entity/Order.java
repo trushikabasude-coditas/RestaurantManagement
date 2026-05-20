@@ -10,7 +10,6 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Getter
 @Setter
 @Table(name = "orders")
@@ -47,10 +46,12 @@ public class Order {
     @Column(name = "final_amount")
     private Integer finalAmount;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     private OrderStatus status = OrderStatus.PENDING;
 
+    @Builder.Default
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItems> items = new ArrayList<>();
 

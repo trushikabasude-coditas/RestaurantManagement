@@ -54,9 +54,11 @@ public class RestaurantBranch {
     @JoinColumn(name = "manager_id", unique = true)
     private User manager;
 
+    @Builder.Default
     @Column(name = "is_head_branch", nullable = false)
     private boolean headBranch = false;
 
+    @Builder.Default
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
 

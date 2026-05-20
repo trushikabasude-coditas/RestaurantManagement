@@ -10,6 +10,7 @@ import com.example.RestaurantManagement.exception.ResourceNotFoundException;
 import com.example.RestaurantManagement.repository.*;
 import com.example.RestaurantManagement.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final InvitationRepository invitationRepository;
     private final RestaurantRepository restaurantRepository;
-    private final branchRepository branchRepository;
+    private final BranchRepository branchRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final EmailService emailService;
@@ -120,7 +121,7 @@ public class AuthService {
         return new AuthResponseDto(accessToken, refreshToken,user.getRole().name(), user.getEmail(), user.getName());
     }
 
-    public AuthResponseDto login(LoginRequestDto dto) {
+    public AuthResponseDto login(@NonNull LoginRequestDto dto) {
         User user = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new BadRequestException("Invalid email or password"));
 
@@ -178,22 +179,5 @@ public class AuthService {
                 || role == Role.CHEF || role == Role.CLEANER;
     }
 
-    public String register(RegisterRequestDto req) {
-        if (userRepository.existsByEmail(req.email()))
-            throw new RuntimeException("Email already in use");
-
-        Role role = (req.role() != null && !req.role().isBlank())
-                ? Role.valueOf(req.role()) : Role.SUPER_ADMIN;
-
-        userRepository.save(User.builder()
-                .username(req.username())
-                .email(req.email())
-                .password(passwordEncoder.encode(req.password()))
-                .fullName(req.fullName())
-                .role(role)
-                .build());
-
-        return "Registered successfully as " + role;
-    }
 
 }

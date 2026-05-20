@@ -65,11 +65,12 @@ public class Dish {
     private String photoUrl;
 
     @Column(name = "is_available", nullable = false)
+    @Builder.Default
     private boolean available = true;
 
-    @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DishIngredients> dishIngredients = new ArrayList<>();
 
+    @Column(name = "ingredients", columnDefinition = "TEXT")
+    private String ingredients;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

@@ -17,41 +17,38 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/invite")
-    public ResponseEntity<ApiResponse<InviteResponseDto>> invite(@Valid @RequestBody InviteRequestDto dto,@AuthenticationPrincipal String senderEmail) {
-        InviteResponseDto result = authService.sendInvitation(dto, senderEmail);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Invitation sent successfully", result));
-    }
+    public ResponseEntity<ApiResponse<InviteResponseDto>> invite(
+            @Valid @RequestBody InviteRequestDto dto,
+            @AuthenticationPrincipal String senderEmail) {
 
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Invitation sent successfully",
+                        authService.sendInvitation(dto, senderEmail)));
+    }
 
     @PostMapping("/accept-invite")
-    public ResponseEntity<ApiResponse<AuthResponseDto>> acceptInvite(@Valid @RequestBody AcceptInviteRequestDto dto) {
+    public ResponseEntity<ApiResponse<AuthResponseDto>> acceptInvite(
+            @Valid @RequestBody AcceptInviteRequestDto dto) {
 
-        AuthResponseDto result = authService.acceptInvitation(dto);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Account created successfully", result));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Account created successfully",
+                        authService.acceptInvitation(dto)));
     }
+
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponseDto>> login(
             @Valid @RequestBody LoginRequestDto dto) {
 
-        AuthResponseDto result = authService.login(dto);
-        return ResponseEntity
-                .ok(ApiResponse.success("Login successful", result));
-    }
-    public ResponseEntity<ApiResponse<AuthResponseDto>> refreshToken(@Valid @RequestBody RefreshTokenRequestDto dto) {
-        AuthResponseDto result = authService.refreshToken(dto);
-        return ResponseEntity
-                .ok(ApiResponse.success("Refresh token successful", result));
-    }
-    public ResponseEntity<ApiResponse<RegisterResponseDto>> register(@Valid @RequestBody RegisterResquestDto  dto) {
-        RegisterResponseDto reuslt = authService.registerUser(dto);
-    return  ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(ApiResponse.success("User registered successfully", reuslt));
+        return ResponseEntity.ok(ApiResponse.success("Login successful",
+                authService.login(dto)));
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<AuthResponseDto>> refresh(
+            @Valid @RequestBody RefreshTokenRequestDto dto) {
+
+        return ResponseEntity.ok(ApiResponse.success("Token refreshed successfully",
+                authService.refreshToken(dto)));
+    }
 
 }
