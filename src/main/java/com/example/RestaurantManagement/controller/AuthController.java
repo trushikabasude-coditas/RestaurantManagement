@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/auth")
@@ -42,7 +41,6 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.success("Login successful",
                 authService.login(dto)));
     }
-
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<AuthResponseDto>> refresh(
             @Valid @RequestBody RefreshTokenRequestDto dto) {

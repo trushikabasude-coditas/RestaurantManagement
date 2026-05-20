@@ -30,7 +30,6 @@ public class BranchController {
                 .body(ApiResponse.success("Branch created successfully",
                         branchService.create(dto, ownerEmail)));
     }
-    // OWNER — get all branches of a restaurant
     @GetMapping("/restaurant/{restaurantId}")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<List<BranchResponseDto>>> getByRestaurant(
@@ -40,7 +39,6 @@ public class BranchController {
         return ResponseEntity.ok(ApiResponse.success("Branches fetched",
                 branchService.getByRestaurant(restaurantId, ownerEmail)));
     }
-    // OWNER or SUPER_ADMIN — get one branch
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('OWNER') or hasRole('SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<BranchResponseDto>> getById(
@@ -50,8 +48,6 @@ public class BranchController {
         return ResponseEntity.ok(ApiResponse.success("Branch fetched",
                 branchService.getById(id, requesterEmail)));
     }
-
-    // OWNER — view managers of all branches of a restaurant
     @GetMapping("/restaurant/{restaurantId}/managers")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<ApiResponse<List<BranchResponseDto>>> getManagers(
@@ -73,7 +69,6 @@ public class BranchController {
         return ResponseEntity.ok(ApiResponse.success("Branch updated",
                 branchService.update(id, dto, ownerEmail)));
     }
-    // SUPER_ADMIN — delete any
     @DeleteMapping("/admin/{id}")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteByAdmin(@PathVariable Long id) {

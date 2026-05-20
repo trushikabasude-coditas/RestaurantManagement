@@ -31,13 +31,9 @@ public class OrderItems {
     @Min(value = 1, message = "Quantity must be at least 1")
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
-
-    // Price snapshot at time of order (dish price may change later)
     @NotNull
     @Column(name = "unit_price", nullable = false)
     private Integer unitPrice;
-
-    // quantity * unitPrice
     @Column(name = "total_price")
     private Integer totalPrice;
 
