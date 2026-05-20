@@ -23,59 +23,57 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Dish {
-
-    @Id
+  @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name ="id",updatable =false,nullable=false)
     private Long id;
 
     // Dish belongs to a branch's menu
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch=FetchType.LAZY,optional = false)
     @JoinColumn(name = "branch_id", nullable = false)
     private RestaurantBranch branch;
 
     @NotBlank(message = "Dish name is required")
-    @Size(max = 200)
-    @Column(name = "name", nullable = false, length = 200)
+    @Size(max=200)
+    @Column(name = "name",nullable=false,length=200)
     private String name;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "special_note", columnDefinition = "TEXT")
+    @Column(name="special_note",columnDefinition="TEXT")
     private String specialNote;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "food_type", nullable = false, length = 20)
+    @Column(name ="food_type",nullable= false,length = 20)
     private FoodType foodType;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "category", nullable = false, length = 30)
+    @Column(name="category",nullable = false,length = 30)
     private DishCategory category;
 
     @NotNull
-    @Min(value = 0, message = "Price cannot be negative")
+    @Min(value=0, message="Price cannot be negative")
     @Column(name = "price", nullable = false)
     private Integer price;
 
-    @Column(name = "photo_url", length = 500)
+    @Column(name = "photo_url",length =500)
     private String photoUrl;
-
-    @Column(name = "is_available", nullable = false)
+    @Column(name="is_available",nullable=false)
     @Builder.Default
-    private boolean available = true;
+    private boolean available=true;
 
 
-    @Column(name = "ingredients", columnDefinition = "TEXT")
+    @Column(name="ingredients",columnDefinition="TEXT")
     private String ingredients;
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name ="created_at",updatable =false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name ="updated_at")
     private LocalDateTime updatedAt;
 }

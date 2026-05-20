@@ -27,34 +27,28 @@ import java.util.List;
                                         FilterChain filterChain)
                 throws ServletException, IOException {
 
-            String authHeader = request.getHeader("Authorization");
+            String authHeader=request.getHeader("Authorization");
 
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            if (authHeader==null || !authHeader.startsWith("Bearer ")) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            String token = authHeader.substring(7);
-
-            if (!jwtUtil.isTokenValid(token) || jwtUtil.isRefreshToken(token)) {
+            String token=authHeader.substring(7);
+            if (!jwtUtil.isTokenValid(token)||jwtUtil.isRefreshToken(token)) {
                 filterChain.doFilter(request, response);
                 return;
             }
-
-            String email = jwtUtil.extractEmail(token);
-            String role = jwtUtil.extractRole(token);
-
+            String email=jwtUtil.extractEmail(token);
+            String role=jwtUtil.extractRole(token);
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(
-                                email,
-                                null,
-                                List.of(new SimpleGrantedAuthority("ROLE_" + role))
+                                email, null,List.of(new SimpleGrantedAuthority("ROLE_"+role))
                         );
                 auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
-
 
             filterChain.doFilter(request, response);
         }

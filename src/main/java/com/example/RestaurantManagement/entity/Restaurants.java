@@ -21,21 +21,21 @@ public class Restaurants {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = "id",updatable =false,nullable=false)
     private Long id;
-
-    @NotBlank(message = "Restaurant name is required")
+    @Getter
+    @NotBlank(message ="Restaurant nameis required")
     @Size(max = 200)
-    @Column(name = "name", nullable = false, length = 200)
+    @Column(name ="name", nullable = false, length = 200)
     private String name;
 
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name="description",columnDefinition="TEXT")
     private String description;
 
-    @Column(name = "logo_url", length = 500)
+    @Column(name="logo_url",length = 500)
     private String logoUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch=FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 

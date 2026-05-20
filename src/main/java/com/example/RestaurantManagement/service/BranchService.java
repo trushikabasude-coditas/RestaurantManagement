@@ -131,7 +131,7 @@ public class BranchService {
     }
 
     private BranchResponseDto toDto(RestaurantBranch b) {
-        // if no manager assigned, owner handles it
+
         String managerName = Objects.requireNonNullElse(
                 b.getManager() != null ? b.getManager().getName() : null,
                 b.getRestaurant().getOwner().getName() + " (Owner)");

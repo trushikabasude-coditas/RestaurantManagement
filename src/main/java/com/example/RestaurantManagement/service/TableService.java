@@ -93,7 +93,7 @@ private void validateViewAccess(String requesterEMail,Long branchId) {
             .orElseThrow(() -> new ResourceNotFoundException("This mail doenst exists"));
     if (user.getRole() == Role.SUPER_ADMIN)
         return;//can view all
-// owner can view all branches
+
     if (user.getRole() == Role.OWNER) {
         RestaurantBranch branch = branchRepository.findById(branchId)
                 .orElseThrow(() -> new ResourceNotFoundException("Branch not found"));
@@ -105,7 +105,7 @@ private void validateViewAccess(String requesterEMail,Long branchId) {
     if (user.getBranch() == null || !user.getBranch().getId().equals(branchId)) {
         throw new BadRequestException("You do not own this branch");
     }
-//toDto method
+
 
 }
     private TableResponseDto toDto(DineTable dt){

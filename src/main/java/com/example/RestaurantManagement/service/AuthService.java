@@ -31,49 +31,42 @@ public class AuthService {
     @Transactional
     public InviteResponseDto sendInvitation(InviteRequestDto dto, String senderEmail) {
         User sender = userRepository.findByEmail(senderEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("Sender not found"));
+                .orElseThrow(()->new ResourceNotFoundException("Sender not found"));
 
         validateSenderCanInvite(sender,dto.getRole());
-
         if (invitationRepository.existsByInvitedEmailAndStatus(dto.getEmail(), InvitationStatus.PENDING)) {
             throw new BadRequestException("A pending invitation already exists for " + dto.getEmail());
         }
-
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new BadRequestException("User with this email already exists");
         }
-        Restaurants restaurant = null;
-        RestaurantBranch branch = null;
+        Restaurants restaurant=null;
+        RestaurantBranch branch=null;
 
-        if (dto.getRestaurantId() != null) {
+        if (dto.getRestaurantId()!=null) {
             restaurant = restaurantRepository.findById(dto.getRestaurantId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found"));
+                    .orElseThrow(()->new ResourceNotFoundException("Restaurant not found"));
         }
-
-        if (dto.getBranchId() != null) {
-            branch = branchRepository.findById(dto.getBranchId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Branch not found"));
+    if (dto.getBranchId() != null) {
+        branch=branchRepository.findById(dto.getBranchId())
+         .orElseThrow(()->new ResourceNotFoundException("Branch not found"));
         }
-
-        if (isBranchLevelRole(dto.getRole()) && branch == null) {
+        if(isBranchLevelRole(dto.getRole()) && branch==null) {
             throw new BadRequestException("Branch is required for role: " + dto.getRole());
         }
-
-        Invitations invitation = Invitations.builder()
-                .invitedEmail(dto.getEmail())
-                .role(dto.getRole())
-                .invitedBy(sender)
-                .restaurant(restaurant)
-                .branch(branch)
-                .status(InvitationStatus.PENDING)
-                .build();
-
+   Invitations invitation=Invitations.builder()
+       .invitedEmail(dto.getEmail())
+      .role(dto.getRole())
+         .invitedBy(sender)
+            .restaurant(restaurant)
+          .branch(branch)
+         .status(InvitationStatus.PENDING)
+        .build();
         invitationRepository.save(invitation);
-        emailService.sendInvitationEmail(dto.getEmail(), dto.getRole().name(), invitation.getToken());
+        emailService.sendInvitationEmail(dto.getEmail(),dto.getRole().name(),invitation.getToken());
 
         return new InviteResponseDto("Invitaion sent successfully!!"+ dto.getEmail(),dto.getEmail());
     }
-
     @Transactional
     public AuthResponseDto acceptInvitation(AcceptInviteRequestDto dto) {
         Invitations invitation = invitationRepository.findByToken(dto.getToken())
@@ -92,8 +85,7 @@ public class AuthService {
         if (userRepository.existsByEmail(invitation.getInvitedEmail())) {
             throw new BadRequestException("User already registered with this email");
         }
-
-        User user = User.builder()
+        User user=User.builder()
                 .name(dto.getName())
                 .email(invitation.getInvitedEmail())
                 .passwordHash(passwordEncoder.encode(dto.getPassword()))
@@ -104,7 +96,6 @@ public class AuthService {
                 .active(true)
                 .build();
         userRepository.save(user);
-
         if (invitation.getRole() == Role.MANAGER && invitation.getBranch() != null) {
             RestaurantBranch branch = invitation.getBranch();
             branch.setManager(user);
@@ -117,29 +108,24 @@ public class AuthService {
 
         String accessToken = jwtUtil.generateAccessToken(user.getEmail(), user.getRole().name());
         String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
-
         return new AuthResponseDto(accessToken, refreshToken,user.getRole().name(), user.getEmail(), user.getName());
     }
 
     public AuthResponseDto login(@NonNull LoginRequestDto dto) {
         User user = userRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new BadRequestException("Invalid email or password"));
-
+                .orElseThrow(()->new BadRequestException("Invalid email or password"));
         if (!user.isActive()) {
             throw new BadRequestException("Account is not activated yet");
         }
-
         if (!passwordEncoder.matches(dto.getPassword(), user.getPasswordHash())) {
             throw new BadRequestException("Invalid email or password");
         }
-
-        String accessToken = jwtUtil.generateAccessToken(user.getEmail(), user.getRole().name());
-        String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
+        String accessToken=jwtUtil.generateAccessToken(user.getEmail(), user.getRole().name());
+        String refreshToken=jwtUtil.generateRefreshToken(user.getEmail());
 
         return new AuthResponseDto(accessToken, refreshToken,
                 user.getRole().name(), user.getEmail(), user.getName());
     }
-
     public AuthResponseDto refreshToken(RefreshTokenRequestDto dto) {
         String token = dto.getRefreshToken();
 
@@ -160,8 +146,7 @@ public class AuthService {
 
     private void validateSenderCanInvite(User sender, Role targetRole) {
         switch (sender.getRole()) {
-            case SUPER_ADMIN -> {
-                if (targetRole != Role.OWNER) {
+            case SUPER_ADMIN -> {if (targetRole != Role.OWNER) {
                     throw new BadRequestException("Super admin can only invite owners");
                 }
             }
@@ -170,13 +155,12 @@ public class AuthService {
                     throw new BadRequestException("Owner cannot invite owner or super admin");
                 }
             }
-            default -> throw new BadRequestException("You do not have permission to send invitations");
+            default->throw new BadRequestException("You have  no  permission to send invitation");
         }
     }
 
     private boolean isBranchLevelRole(Role role) {
-        return role == Role.MANAGER || role == Role.WAITER
-                || role == Role.CHEF || role == Role.CLEANER;
+        return role==Role.MANAGER || role==role.WAITER || role==Role.CHEF || role==Role.CLEANER;
     }
 
 }

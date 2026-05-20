@@ -106,10 +106,10 @@ public class    RestaurantService {
 
         validateAccess(restaurant, ownerEmail);
         if (dto.getName() != null) restaurant.setName(dto.getName());
-         if (dto.getDescription() != null) restaurant.setDescription(dto.getDescription());
-         if (dto.getGstNumber() != null) restaurant.setGstNumber(dto.getGstNumber());
-         if (dto.getPanNumber() != null) restaurant.setPanNumber(dto.getPanNumber());
-        if (dto.getLogoUrl() != null) restaurant.setLogoUrl(dto.getLogoUrl());
+    if (dto.getDescription() != null) restaurant.setDescription(dto.getDescription());
+      if (dto.getGstNumber() != null) restaurant.setGstNumber(dto.getGstNumber());
+      if (dto.getPanNumber() != null) restaurant.setPanNumber(dto.getPanNumber());
+      if (dto.getLogoUrl() != null) restaurant.setLogoUrl(dto.getLogoUrl());
 
         return toDto(restaurantRepository.save(restaurant));
     }

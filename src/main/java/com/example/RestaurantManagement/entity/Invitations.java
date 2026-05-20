@@ -23,32 +23,32 @@ import java.util.UUID;
 public class Invitations {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false)
+    @Column(name="id", nullable=false, updatable=false)
     private Long id;
 
-    @Column(name = "token", nullable = false, unique = true, updatable = false, length = 36)
+    @Column(name="token", nullable=false,unique=true, updatable=false, length=36)
     private String token;
 
     @NotBlank
     @Email
-    @Column(name = "invited_email", nullable = false, length = 255)
+    @Column(name="invited_email",nullable =false, length = 255)
     private String invitedEmail;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false, length = 30)
+    @Column(name="role",nullable=false,length = 30)
     private Role role;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "invited_by", nullable = false)
+    @ManyToOne(fetch=FetchType.LAZY, optional = false)
+    @JoinColumn(name="invited_by", nullable = false)
     private User invitedBy;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id")
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="restaurant_id")
     private Restaurants restaurant;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "branch_id")
+    @ManyToOne(fetch =FetchType.LAZY)
+    @JoinColumn(name ="branch_id")
     private RestaurantBranch branch;
 
     @Enumerated(EnumType.STRING)
@@ -56,22 +56,22 @@ public class Invitations {
     private InvitationStatus status = InvitationStatus.PENDING;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name="created_at",updatable =false)
     private LocalDateTime createdAt;
 
-    @Column(name = "expires_at", nullable = false)
+    @Column(name="expires_at",nullable = false)
     private LocalDateTime expiresAt;
 
-    @Column(name = "accepted_at")
+    @Column(name="accepted_at")
     private LocalDateTime acceptedAt;
 
     @PrePersist
     public void prePersist() {
-        if (this.token == null) {
-            this.token = UUID.randomUUID().toString();
+        if (this.token==null) {
+            this.token=UUID.randomUUID().toString();
         }
-        if (this.expiresAt == null) {
-            this.expiresAt = LocalDateTime.now().plusHours(48);
+        if (this.expiresAt==null) {
+            this.expiresAt=LocalDateTime.now().plusHours(48);
         }
     }
 }

@@ -10,50 +10,41 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "bill")
-@Getter
-@Setter
+@Getter @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Bill {
+public class Bill{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false, nullable = false)
+  @GeneratedValue(strategy =GenerationType.IDENTITY)
+    @Column(name ="id",updatable =false,nullable =false)
     private Long id;
-
     @NotNull
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "order_id", nullable = false, unique = true)
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name ="order_id",nullable=false,unique=true)
     private Order order;
-
     @NotNull
-    @Column(name = "subtotal")
+    @Column(name="subtotal")
  private Integer subTotal;
-
-    @Column(name = "discount_applied")
-    private Integer discountApplied = 0;
-
-    @Column(name = "discount_reason", length = 255)
+  @Column(name="discount_applied")
+  private Integer discountApplied = 0;
+    @Column(name ="discount_reason",length=40)
     private String discountReason;
     @Column(name = "tax_amount")
-private int taxAmount;//(subtotal-=disc)
-
-    @Min(0)
-    @Column(name = "gst_rate")
+private int taxAmount;
+    @Min(0)@Column(name = "gst_rate")
     private Integer gstRate;
-@Column(name = "final_amount")
+@Column(name="final_amount")
 private Integer finalAmount;
     @Enumerated(EnumType.STRING)
-    @Column(name = "payment_way", length = 20)
+    @Column(name="payment_way",length=20)
     private PaymentWay paymentWay;
-
-    @Column(name = "is_paid", nullable = false)
+    @Column(name ="is_paid",nullable = false)
     @Builder.Default
-    private boolean paid = false;
+    private boolean paid=false;
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name="created_at",updatable=false)
     private LocalDateTime createdAt;
-
  }
 
 

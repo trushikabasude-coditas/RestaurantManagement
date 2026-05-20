@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "order_items")
+@Table(name ="order_items")
 public class OrderItems {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,29 +19,29 @@ public class OrderItems {
 
     private Long id;
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "order_id", nullable = false)
+    @ManyToOne(fetch=FetchType.LAZY,optional = false)
+    @JoinColumn(name="order_id",nullable = false)
     private Order order;
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "dish_id", nullable = false)
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name ="dish_id", nullable = false)
     private Dish dish;
 
     @NotNull
     @Min(value = 1, message = "Quantity must be at least 1")
-    @Column(name = "quantity", nullable = false)
+    @Column(name="quantity",nullable = false)
     private Integer quantity;
     @NotNull
-    @Column(name = "unit_price", nullable = false)
+    @Column(name="unit_price",nullable=false)
     private Integer unitPrice;
-    @Column(name = "total_price")
+    @Column(name ="total_price")
     private Integer totalPrice;
 
     @PrePersist
     @PreUpdate
     public void calculateTotal() {
-        if (quantity != null && unitPrice != null) {
-            this.totalPrice = quantity * unitPrice;
+        if (quantity!=null && unitPrice!=null) {
+    this.totalPrice=quantity*unitPrice;
         }
     }
 }

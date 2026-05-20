@@ -22,7 +22,7 @@ public class StaffService {
     private final UserRepository userRepository;
     private final BranchRepository branchRepository;
 
-    // Get all staff of a branch
+    // get all staffranch
     public List<StaffResponseDto> getStaffByBranch(Long branchId, String requesterEmail) {
         RestaurantBranch branch = branchRepository.findById(branchId)
                 .orElseThrow(() -> new ResourceNotFoundException("Branch not found"));
@@ -36,7 +36,7 @@ public class StaffService {
                 .collect(Collectors.toList());
     }
 
-    // Get staff by role in a branch (WAITER / CHEF / CLEANER)
+    // get staff by role in a branc
     public List<StaffResponseDto> getStaffByBranchAndRole(Long branchId, String role,
                                                           String requesterEmail) {
         RestaurantBranch branch = branchRepository.findById(branchId)
@@ -53,18 +53,15 @@ public class StaffService {
         } catch (IllegalArgumentException e) {
             throw new BadRequestException("Invalid role: " + role);
         }
-
         if (!isStaffRole(staffRole)) {
             throw new BadRequestException("Role must be WAITER, CHEF or CLEANER");
         }
-
         return userRepository.findByBranchIdAndRole(branchId, staffRole)
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
-    // Get single staff member
     public StaffResponseDto getStaffById(Long userId, String requesterEmail) {
         User staff = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Staff not found"));
@@ -72,18 +69,15 @@ public class StaffService {
         if (!isStaffRole(staff.getRole())) {
             throw new BadRequestException("User is not a staff member");
         }
-
         User requester = userRepository.findByEmail(requesterEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (staff.getBranch() != null) {
             validateAccess(requester, staff.getBranch());
         }
-
         return toDto(staff);
     }
 
-    // Deactivate staff
     @Transactional
     public void deactivateStaff(Long userId, String requesterEmail) {
         User staff = userRepository.findById(userId)
@@ -92,24 +86,19 @@ public class StaffService {
         if (!isStaffRole(staff.getRole())) {
             throw new BadRequestException("User is not a staff member");
         }
-
         User requester = userRepository.findByEmail(requesterEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (staff.getBranch() != null) {
             validateAccess(requester, staff.getBranch());
         }
-
         staff.setActive(false);
         userRepository.save(staff);
     }
-
-    // Reactivate staff
     @Transactional
     public void reactivateStaff(Long userId, String requesterEmail) {
         User staff = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Staff not found"));
-
         if (!isStaffRole(staff.getRole())) {
             throw new BadRequestException("User is not a staff member");
         }
@@ -131,9 +120,6 @@ public class StaffService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return toDto(user);
     }
-
-    // --- helpers ---
-
     private void validateAccess(User requester, RestaurantBranch branch) {
         if (requester.getRole() == Role.OWNER) {
             // owner can access any branch of their restaurant
@@ -154,19 +140,16 @@ public class StaffService {
             throw new BadRequestException("Access denied");
         }
     }
-
     private boolean isStaffRole(Role role) {
         return role == Role.WAITER || role == Role.CHEF || role == Role.CLEANER;
     }
 
     private StaffResponseDto toDto(User u) {
         return StaffResponseDto.builder()
-                .id(u.getId())
-                .name(u.getName())
-                .email(u.getEmail())
-                .phone(u.getPhone())
-                .role(u.getRole().name())
-                .active(u.isActive())
+             .id(u.getId())
+            .name(u.getName())
+             .email(u.getEmail()).phone(u.getPhone())
+                .role(u.getRole().name()).active(u.isActive())
                 .branchId(u.getBranch() != null ? u.getBranch().getId() : null)
                 .branchName(u.getBranch() != null ? u.getBranch().getBranchName() : null)
                 .restaurantId(u.getRestaurant() != null ? u.getRestaurant().getId() : null)
